@@ -47,7 +47,10 @@
 }
 
 body {
-  background: var(--bg);
+  background-image: url(./assets/gbg.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
   height: 80vh;
   margin: 0;
 }
@@ -59,11 +62,12 @@ body {
 .container {
   display: flex;
   gap: var(--clock-gap);
-  background-color: #000;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-  border: 0.5rem solid #fff;
+  border: 1px solid #fff;
+  border-radius: 18px;
+  backdrop-filter: blur(10px) brightness(1.1);
 }
 .digit {
   display: flex;
@@ -148,10 +152,7 @@ button:hover {
 .timebox {
   align-items: center;
   display: flex;
-  padding: 4rem 2rem 4rem 3.5rem;
-  border: 1px solid #000;
-  border-radius: 18px;
-  backdrop-filter: blur(10px) brightness(1.1);
+  padding: 1rem;
 }
 
 .timebox:not(:last-child) {

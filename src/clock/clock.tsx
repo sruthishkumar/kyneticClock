@@ -12,7 +12,7 @@ import Colon from "./colon";
 export default function Clock({
   size = "2rem", // size of each mini-clock (CSS length)
   gap = "0.25rem", // gap between mini-clocks
-  color = "#f3f3f3", // hand color (with glow)
+  color = "#000", // hand color (with glow)
   bg = "#f3f3f3", // background behind the widget
   twelveHour = true, // 12h like the pen
   tickMs = 1000, // update interval
@@ -363,6 +363,11 @@ export default function Clock({
         <div className="timebox minute">
           {minuteList.map((d, di) => (
             <Digit key={di} pattern={DIGITS[d]} />
+          ))}
+        </div>
+        <div className="timebox colonbox">
+          {colenList.map((d, di) => (
+            <Colon key={di} pattern={COLON[d]} />
           ))}
         </div>
         <div className="timebox seconds">

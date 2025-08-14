@@ -11,14 +11,14 @@ function Header() {
   return (
     <>
       {!isVisible && (
-        <div className="bg-white border-gray-200">
+        <div className="border-gray-200">
           <button onClick={toggleVisibility}>
             <span className="material-icons">trip_origin</span>
           </button>
         </div>
       )}
       {isVisible && (
-        <nav className="bg-white border-gray-200">
+        <nav className="border-gray-200">
           <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
             <a
               href="https://flowbite.com"
