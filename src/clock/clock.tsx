@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Digit from "./digit";
-import Colon from "./colon";
+import { CLOCKDIGITS } from "./digits";
 
 /**
  * Notes:
@@ -16,6 +16,14 @@ export default function Clock({
   bg = "#f3f3f3", // background behind the widget
   twelveHour = true, // 12h like the pen
   tickMs = 1000, // update interval
+  hrs = 0,
+  min = 0,
+  sec = 0,
+  tms = 0,
+  showHrs = true,
+  showMin = true,
+  showSec = true,
+  value = 90,
 }: {
   size?: string;
   gap?: string;
@@ -23,306 +31,38 @@ export default function Clock({
   bg?: string;
   twelveHour?: boolean;
   tickMs?: number;
+  hrs?: number;
+  min?: number;
+  sec?: number;
+  tms?: number;
+  showHrs?: boolean;
+  showMin?: boolean;
+  showSec?: boolean;
+  value?: number;
 }) {
-  const [now, setNow] = useState(new Date());
+  const [dTime, setNow] = useState(new Date());
+
+  const DIGITS: Record<string, [number, number][]> = useMemo(
+    () => CLOCKDIGITS,
+    []
+  );
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), tickMs);
+    const id = setInterval(
+      () => setNow(tms ? new Date(tms) : new Date()),
+      tickMs
+    );
     return () => clearInterval(id);
   }, [tickMs]);
-
-  // ---------------- Digit patterns ----------------
-  // Each entry is 24 [a,b] pairs. Angles are multiples of 90° (the pen used numbers like 0,1,2,3 and a few 4.6 etc.)
-  // a = rotation for :after; b = rotation for :before; both multiplied by 90deg in CSS.
-  const DIGITS: Record<string, [number, number][]> = useMemo(
-    () => ({
-      "0": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [2, 1],
-        [2, 3],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 1],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "1": [
-        [1, 2],
-        [1, 3],
-        [2, 3],
-        [2.6, 2.6],
-        [0, 1],
-        [3, 2],
-        [2, 0],
-        [2.6, 2.6],
-        [2.6, 2.6],
-        [0, 2],
-        [0, 2],
-        [2.6, 2.6],
-        [2.6, 2.6],
-        [0, 2],
-        [0, 2],
-        [2.6, 2.6],
-        [1, 2],
-        [0, 3],
-        [0, 1],
-        [3, 2],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "2": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 1],
-        [3, 1],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [1, 0],
-        [1, 3],
-        [2, 3],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "3": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 1],
-        [3, 1],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "4": [
-        [1, 2],
-        [2, 3],
-        [1, 2],
-        [3, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 2],
-        [0, 1],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 2],
-        [0, 2],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 1],
-        [0, 3],
-      ],
-      "5": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 2],
-        [2, 1],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [2, 0],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "6": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 2],
-        [2, 1],
-        [1, 3],
-        [0, 3],
-        [0, 2],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [2, 3],
-        [0, 2],
-        [0, 2],
-        [1, 0],
-        [0, 3],
-        [2, 0],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "7": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 1],
-        [3, 1],
-        [2, 3],
-        [0, 2],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 2],
-        [0, 2],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 2],
-        [0, 2],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 2],
-        [2, 0],
-        [4.6, 4.6],
-        [4.6, 4.6],
-        [0, 1],
-        [0, 3],
-      ],
-      "8": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 2],
-        [2, 1],
-        [2, 3],
-        [0, 2],
-        [0, 1.5],
-        [0, 1],
-        [0, 3],
-        [2.5, 0],
-        [0.6, 2],
-        [1, 2],
-        [2, 3],
-        [3.5, 2],
-        [0, 2],
-        [1, 0],
-        [0, 3],
-        [2, 0],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-      "9": [
-        [1, 2],
-        [1, 3],
-        [1, 3],
-        [3, 2],
-        [0, 2],
-        [2, 1],
-        [2, 3],
-        [0, 2],
-        [0, 2],
-        [0, 1],
-        [0, 3],
-        [2, 0],
-        [0, 1],
-        [1, 3],
-        [2, 3],
-        [0, 2],
-        [1, 2],
-        [1, 3],
-        [0, 3],
-        [2, 0],
-        [0, 1],
-        [1, 3],
-        [1, 3],
-        [0, 3],
-      ],
-    }),
-    []
-  );
-  const COLON: Record<string, [number, number][]> = useMemo(
-    () => ({
-      ":": [
-        [2, 1],
-        [2, 3],
-        [0, 1],
-        [0, 3],
-        [1, 2],
-        [2, 3],
-        [1, 0],
-        [0, 3],
-      ],
-    }),
-    []
-  );
 
   // -------------- helpers --------------
   function twoDigits(n: number) {
     return n < 10 ? [0, n] : [Math.floor(n / 10), n % 10];
   }
 
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
+  const hours = hrs ? new Date().setHours(hrs) : dTime.getHours();
+  const minutes = min ? new Date().setMinutes(min) : dTime.getMinutes();
+  const seconds = sec ? new Date().setSeconds(sec) : dTime.getSeconds();
   const ampm = hours >= 12 ? "PM" : "AM";
   const hh = twelveHour ? (hours <= 12 ? hours : hours - 12) : hours;
   const [h1, h2] =
@@ -346,39 +86,47 @@ export default function Clock({
           "--clock-size": size,
           "--clock-gap": gap,
           "--hand-color": color,
+          scale: value / 100,
         } as React.CSSProperties
       }
     >
       <div className="container">
-        <div className="timebox hour">
-          {hourList.map((d, di) => (
-            <Digit key={di} pattern={DIGITS[d]} />
-          ))}
-        </div>
-        <div className="timebox colonbox">
+        {showHrs && (
+          <div className="timebox hour">
+            {hourList.map((d, di) => (
+              <Digit key={di} pattern={DIGITS[d]} />
+            ))}
+          </div>
+        )}
+        {/* <div className="timebox colonbox">
           {colenList.map((d, di) => (
             <Colon key={di} pattern={COLON[d]} />
           ))}
-        </div>
-        <div className="timebox minute">
-          {minuteList.map((d, di) => (
-            <Digit key={di} pattern={DIGITS[d]} />
-          ))}
-        </div>
-        <div className="timebox colonbox">
+        </div> */}
+        {showMin && (
+          <div className="timebox minute">
+            {minuteList.map((d, di) => (
+              <Digit key={di} pattern={DIGITS[d]} />
+            ))}
+            {/* <span className="ampmt">{ampm}</span> */}
+          </div>
+        )}
+        {/* <div className="timebox colonbox">
           {colenList.map((d, di) => (
             <Colon key={di} pattern={COLON[d]} />
           ))}
-        </div>
-        <div className="timebox seconds">
-          {secondList.map((d, di) => (
-            <Digit key={di} pattern={DIGITS[d]} />
-          ))}
-        </div>
+        </div>*/}
+        {showSec && (
+          <div className="timebox seconds">
+            {secondList.map((d, di) => (
+              <Digit key={di} pattern={DIGITS[d]} />
+            ))}
+          </div>
+        )}
         {/* <div className="ampm-container">
-        <span>{seconds}</span>
-        <span>{ampm}</span>
-      </div> */}
+          <span>{seconds}</span>
+          <span>{ampm}</span>
+        </div> */}
         {/* {digitList.map((d, di) => (
         <Digit key={di} pattern={DIGITS[d]} />
       ))} */}

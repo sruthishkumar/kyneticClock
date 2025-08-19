@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glass Panel with Pastel Dots</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #d0e9d6, #e9e4f0);
+      font-family: sans-serif;
+    }
+
+    .glass-panel {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 80vw;
+      height: 70vh;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+    }
+
+    .dot {
+      width: 20vw;
+      height: 20vw;
+      border-radius: 1rem;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .green { background-color: #c3f3c2; }
+    .blue { background-color: #cde6f7; }
+    .yellow { background-color: #fce4a0; }
+  </style>
+</head>
+<body>
+  <div class="glass-panel">
+    <div class="dot green"></div>
+    <div class="dot blue"></div>
+    <div class="dot yellow"></div>
+  </div>
+</body>
+</html>

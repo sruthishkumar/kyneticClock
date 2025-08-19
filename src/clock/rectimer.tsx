@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Digit from "./digit";
-import { CLOCKDIGITS } from "./digits";
+import { CLOCKDIGITS, CLOCKCOLON } from "./digits";
 
 /**
  * Notes:
@@ -9,20 +9,13 @@ import { CLOCKDIGITS } from "./digits";
  * - This file avoids Sass/Pug by computing the 24 angle pairs in JS and inlining them per cell.
  */
 
-export default function Timer({
+export default function RecTimer({
   size = "2rem", // size of each mini-clock (CSS length)
   gap = "0.25rem", // gap between mini-clocks
-  color = "#f3f3f3", // hand color (with glow)
+  color = "#000", // hand color (with glow)
   bg = "#f3f3f3", // background behind the widget
   twelveHour = true, // 12h like the pen
   tickMs = 1000, // update interval
-  hrs = 0,
-  min = 0,
-  sec = 0,
-  tms = 0,
-  showHrs = true,
-  showMin = true,
-  showSec = true,
 }: {
   size?: string;
   gap?: string;
@@ -30,26 +23,21 @@ export default function Timer({
   bg?: string;
   twelveHour?: boolean;
   tickMs?: number;
-  hrs?: number;
-  min?: number;
-  sec?: number;
-  tms?: number;
-  showHrs?: boolean;
-  showMin?: boolean;
-  showSec?: boolean;
 }) {
-  const [dTime, setNow] = useState(new Date());
+  const [now, setNow] = useState(new Date());
 
   const DIGITS: Record<string, [number, number][]> = useMemo(
     () => CLOCKDIGITS,
     []
   );
 
+  const COLON: Record<string, [number, number][]> = useMemo(
+    () => CLOCKCOLON,
+    []
+  );
+
   useEffect(() => {
-    const id = setInterval(
-      () => setNow(tms ? new Date(tms) : new Date()),
-      tickMs
-    );
+    const id = setInterval(() => setNow(new Date()), tickMs);
     return () => clearInterval(id);
   }, [tickMs]);
 
@@ -58,9 +46,9 @@ export default function Timer({
     return n < 10 ? [0, n] : [Math.floor(n / 10), n % 10];
   }
 
-  const hours = hrs ? new Date().setHours(hrs) : dTime.getHours();
-  const minutes = min ? new Date().setMinutes(min) : dTime.getMinutes();
-  const seconds = sec ? new Date().setSeconds(sec) : dTime.getSeconds();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
   const ampm = hours >= 12 ? "PM" : "AM";
   const hh = twelveHour ? (hours <= 12 ? hours : hours - 12) : hours;
   const [h1, h2] =
@@ -88,42 +76,35 @@ export default function Timer({
       }
     >
       <div className="container">
-        {showHrs && (
-          <div className="timebox hour">
-            {hourList.map((d, di) => (
-              <Digit key={di} pattern={DIGITS[d]} />
-            ))}
-          </div>
-        )}
+        <div className="timebox hour">
+          {hourList.map((d, di) => (
+            <Digit key={di} pattern={DIGITS[d]} />
+          ))}
+        </div>
         {/* <div className="timebox colonbox">
           {colenList.map((d, di) => (
             <Colon key={di} pattern={COLON[d]} />
           ))}
         </div> */}
-        {showMin && (
-          <div className="timebox minute">
-            {minuteList.map((d, di) => (
-              <Digit key={di} pattern={DIGITS[d]} />
-            ))}
-            <span className="ampmt">{ampm}</span>
-          </div>
-        )}
+        <div className="timebox minute">
+          {minuteList.map((d, di) => (
+            <Digit key={di} pattern={DIGITS[d]} />
+          ))}
+        </div>
         {/* <div className="timebox colonbox">
           {colenList.map((d, di) => (
             <Colon key={di} pattern={COLON[d]} />
           ))}
-        </div>*/}
-        {showSec && (
-          <div className="timebox seconds">
-            {secondList.map((d, di) => (
-              <Digit key={di} pattern={DIGITS[d]} />
-            ))}
-          </div>
-        )}
+        </div> */}
+        <div className="timebox seconds">
+          {secondList.map((d, di) => (
+            <Digit key={di} pattern={DIGITS[d]} />
+          ))}
+        </div>
         {/* <div className="ampm-container">
-          <span>{seconds}</span>
-          <span>{ampm}</span>
-        </div> */}
+        <span>{seconds}</span>
+        <span>{ampm}</span>
+      </div> */}
         {/* {digitList.map((d, di) => (
         <Digit key={di} pattern={DIGITS[d]} />
       ))} */}
